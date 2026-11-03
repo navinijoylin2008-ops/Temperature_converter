@@ -1,0 +1,7 @@
+# Compiled binaries
+*.exe
+*.o
+*.out
+server
+wasm/
+
