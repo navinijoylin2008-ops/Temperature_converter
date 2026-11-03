@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="dark" data-thermal-theme="default">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Temperature Analyzer &amp; Converter with Intelligent Alerts</title>
+  <meta name="description" content="Intelligent temperature conversion (Celsius, Fahrenheit, Kelvin, Rankine), multi-reading statistical analyzer, custom threshold presets, and 6-tier automatic alert monitoring system." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Dynamic Ambient Background Orbs -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+    <div class="ambient-grid"></div>
+  </div>
+
+  <!-- Popup Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- Mobile Sidebar Toggle Button -->
+  <button type="button" class="mobile-sidebar-toggle" id="mobileMenuBtn" aria-label="Toggle Left Navigation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+
+  <div class="app-layout">
+    <!-- ==================== LEFT SIDEBAR NAVIGATION PANE ==================== -->
+    <aside class="sidebar-nav" id="topNavbar" aria-label="Sidebar Navigation">
+      <div class="sidebar-top">
+        <a href="#home" class="brand-logo" aria-label="Smart Temperature Analyzer Home">
+          <div class="brand-icon">
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 3C13.7909 3 12 4.79086 12 7V17.5351C10.1656 18.8815 9 21.0557 9 23.5C9 27.6421 12.3579 31 16.5 31C20.6421 31 24 27.6421 24 23.5C24 21.0557 22.8344 18.8815 21 17.5351V7C21 4.79086 19.2091 3 16.5 3H16Z" stroke="currentColor" stroke-width="2.2" />
+              <circle cx="16.5" cy="23.5" r="4" fill="currentColor" />
+              <path d="M16.5 19.5V9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+              <path d="M24 8H27M24 12H26M24 16H27" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">SMART TEMP</span>
+            <span class="brand-subtitle" id="cEngineStatusBadge">Live System Active</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="sidebar-menu-label">NAVIGATION</div>
+      <nav class="nav-links" id="navLinks" aria-label="Primary Navigation">
+        <a href="#home" class="nav-link active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Overview</span>
+        </a>
+
+        <a href="#converter" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="17 1 21 5 17 9"></polyline>
+            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+            <polyline points="7 23 3 19 7 15"></polyline>
+            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+          </svg>
+          <span>Temperature Converter</span>
+        </a>
+
+        <a href="#analyzer" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Temperature Statistics</span>
+        </a>
+
+        <a href="#alerts" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span>Intelligent Alerts</span>
+        </a>
+
+        <a href="#history" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>History &amp; Export</span>
+        </a>
+      </nav>
+
+      <!-- Bottom Controls inside Left Sidebar -->
+      <div class="sidebar-footer">
+        <div class="thermal-state-pill" id="thermalStatePill" title="Full-display dynamic color changes based on Low (Blue), Medium (Mild), or High (Red) temperature">
+          <span class="state-dot" id="thermalStateDot"></span>
+          <div class="state-pill-info">
+            <small>AMBIENT DISPLAY</small>
+            <span class="state-label" id="thermalStateLabel">Default Navy</span>
+          </div>
+        </div>
+
+        <!-- Alert Sound Toggle Button -->
+        <button type="button" class="sidebar-theme-btn" id="soundToggleBtn" aria-label="Toggle Alert Sound">
+          <svg id="soundOnIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <span id="soundToggleLabel">Alert Sound: ON</span>
+        </button>
+
+        <!-- Light / Dark Mode Toggle -->
+        <button type="button" class="sidebar-theme-btn" id="themeToggleBtn" aria-label="Toggle Light/Dark Mode">
+          <svg id="sunIcon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="moonIcon" class="theme-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span>Switch Theme Mode</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT AREA ==================== -->
+    <div class="main-workspace">
+      <main>
+        <!-- ==================== HERO / HOMEPAGE SECTION ==================== -->
+        <section id="home" class="hero-section">
+          <div class="container hero-grid">
+            <div class="hero-content">
+              <div class="project-badge">
+                <span class="badge-pulse"></span>
+                <span id="heroEngineBadgeText">SMART THERMAL TELEMETRY &amp; ANALYSIS SYSTEM</span>
+              </div>
+
+              <h1 class="hero-title">
+                SMART TEMPERATURE <span class="text-gradient">ANALYZER &amp; CONVERTER</span>
+              </h1>
+
+              <p class="hero-tagline">
+                "Convert. Analyze. Monitor. Stay Informed."
+              </p>
+
+              <p class="hero-description">
+                An intelligent temperature conversion system that converts temperature units, validates physical limits, analyzes temperature conditions and generates automatic alerts.
+              </p>
+
+              <div class="hero-cta-group">
+                <a href="#converter" class="btn btn-primary btn-lg" id="startAnalyzingBtn">
+                  <span>START ANALYZING</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
+                <button type="button" class="btn btn-glass btn-lg" id="heroDownloadReportBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>DOWNLOAD REPORT</span>
+                </button>
+              </div>
+
+              <!-- 3 Spec Boxes Only -->
+              <div class="hero-QuickSpecs hero-QuickSpecs-3">
+                <div class="spec-chip">
+                  <span class="spec-val">4 Scales</span>
+                  <span class="spec-lbl">°C, °F, K &amp; °R</span>
+                </div>
+                <div class="spec-chip">
+                  <span class="spec-val">8 Metrics</span>
+                  <span class="spec-lbl">Min / Max / Avg / Med / SD / Trend / Next</span>
+                </div>
+                <div class="spec-chip">
+                  <span class="spec-val">6 Alert Tiers</span>
+                  <span class="spec-lbl">Freezing to Extreme Danger + Presets</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Visual Showcase Card -->
+            <div class="hero-visual">
+              <div class="glass-card hero-showcase-card">
+                <div class="showcase-header">
+                  <div class="window-dots">
+                    <span class="dot red"></span>
+                    <span class="dot amber"></span>
+                    <span class="dot green"></span>
+                  </div>
+                  <span class="showcase-title">THERMAL MONITOR • LIVE TELEMETRY</span>
+                  <span class="showcase-status" id="heroBadgeStatus">COMFORTABLE</span>
+                </div>
+
+                <div class="showcase-body">
+                  <div class="hero-thermometer-wrap">
+                    <svg class="hero-svg-illustration" viewBox="0 0 260 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="130" cy="105" r="84" stroke="currentColor" stroke-opacity="0.14" stroke-width="1.5" stroke-dasharray="6 6" />
+                      <circle cx="130" cy="105" r="64" stroke="currentColor" stroke-opacity="0.22" stroke-width="1.5" />
+                      <path d="M58 144 A 80 80 0 1 1 202 144" stroke="url(#heroArcGrad)" stroke-width="8" stroke-linecap="round" />
+                      <rect x="118" y="30" width="24" height="108" rx="12" fill="rgba(15, 23, 42, 0.78)" stroke="currentColor" stroke-opacity="0.45" stroke-width="2.5" />
+                      <line x1="148" y1="44" x2="158" y2="44" stroke="#ef4444" stroke-width="2" stroke-linecap="round" />
+                      <line x1="148" y1="64" x2="155" y2="64" stroke="#f97316" stroke-width="2" stroke-linecap="round" />
+                      <line x1="148" y1="84" x2="158" y2="84" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" />
+                      <line x1="148" y1="104" x2="155" y2="104" stroke="#10b981" stroke-width="2" stroke-linecap="round" />
+                      <line x1="148" y1="124" x2="158" y2="124" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                      <rect x="125" y="70" width="10" height="72" rx="5" fill="url(#mercuryGrad)" />
+                      <circle cx="130" cy="154" r="23" fill="rgba(15, 23, 42, 0.88)" stroke="currentColor" stroke-opacity="0.45" stroke-width="2.5" />
+                      <circle cx="130" cy="154" r="16" fill="url(#mercuryGrad)" />
+                      <circle cx="124" cy="148" r="4.5" fill="rgba(255,255,255,0.45)" />
+                      <defs>
+                        <linearGradient id="heroArcGrad" x1="58" y1="144" x2="202" y2="144" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stop-color="#38bdf8" />
+                          <stop offset="30%" stop-color="#10b981" />
+                          <stop offset="65%" stop-color="#f59e0b" />
+                          <stop offset="100%" stop-color="#ef4444" />
+                        </linearGradient>
+                        <linearGradient id="mercuryGrad" x1="130" y1="30" x2="130" y2="176" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stop-color="#ff6b35" />
+                          <stop offset="50%" stop-color="#00d2ff" />
+                          <stop offset="100%" stop-color="#3b82f6" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </div>
+
+                  <div class="showcase-metrics showcase-metrics-4">
+                    <div class="mini-metric">
+                      <span class="mini-label">CELSIUS</span>
+                      <span class="mini-value" id="heroPreviewC">22.00 °C</span>
+                    </div>
+                    <div class="mini-metric">
+                      <span class="mini-label">FAHRENHEIT</span>
+                      <span class="mini-value" id="heroPreviewF">71.60 °F</span>
+                    </div>
+                    <div class="mini-metric">
+                      <span class="mini-label">KELVIN</span>
+                      <span class="mini-value" id="heroPreviewK">295.15 K</span>
+                    </div>
+                    <div class="mini-metric">
+                      <span class="mini-label">RANKINE</span>
+                      <span class="mini-value" id="heroPreviewR">531.27 °R</span>
+                    </div>
+                  </div>
+
+                  <div class="showcase-footer-note">
+                    <span class="mono-tag">ABS ZERO LIMITS:</span>
+                    <span>-273.15°C | -459.67°F | 0 K | 0 °R</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 1. LIVE TEMPERATURE CONVERTER MODULE ==================== -->
+        <section id="converter" class="section converter-section">
+          <div class="container">
+            <div class="section-header">
+              <div class="section-eyebrow">MODULE 1 • REAL-TIME UNIT CONVERSION</div>
+              <h2 class="section-title">Live Temperature Converter &amp; Physical Validator</h2>
+              <p class="section-subtitle">
+                Convert in real time as you type between <strong>Celsius (°C)</strong>, <strong>Fahrenheit (°F)</strong>, <strong>Kelvin (K)</strong>, and <strong>Rankine (°R)</strong> with step-by-step formula breakdown, unit swap, Absolute Zero validation, and Reference Table of Common Temperatures.
+              </p>
+            </div>
+
+            <!-- Quick Demo Presets Bar -->
+            <div class="presets-bar glass-card">
+              <div class="presets-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>Quick Test Presets:</span>
+              </div>
+              <div class="preset-buttons">
+                <button type="button" class="preset-chip chip-freezing" data-val="-15" data-unit="C">Freezing (-15°C → Blue UI)</button>
+                <button type="button" class="preset-chip chip-cold" data-val="8" data-unit="C">Cold (8°C → Blue UI)</button>
+                <button type="button" class="preset-chip chip-normal" data-val="22" data-unit="C">Comfortable (22°C → Mild UI)</button>
+                <button type="button" class="preset-chip chip-warm" data-val="31" data-unit="C">Warm (31°C → Mild UI)</button>
+                <button type="button" class="preset-chip chip-hot" data-val="40" data-unit="C">Hot (40°C → Red UI)</button>
+                <button type="button" class="preset-chip chip-danger" data-val="52" data-unit="C">Extreme Heat (52°C → Red UI)</button>
+                <button type="button" class="preset-chip chip-invalid" data-val="-300" data-unit="C">Test Invalid (-300°C)</button>
+              </div>
+            </div>
+
+            <div class="analyzer-grid">
+              <!-- Left Card: Live Converter Controls + Swap + Step-by-Step Formula -->
+              <div class="glass-card converter-card">
+                <div class="card-header-row">
+                  <div>
+                    <h3 class="card-title">Interactive Unit Converter</h3>
+                    <p class="card-desc">Live conversion as you type with step-by-step formula</p>
+                  </div>
+                  <span class="unit-badge-indicator" id="selectedUnitIndicator">°C → °F</span>
+                </div>
+
+                <form id="converterForm" novalidate>
+                  <div class="form-group">
+                    <label for="tempInput" class="form-label">Enter Temperature Value (Live Conversion)</label>
+                    <div class="input-wrapper" id="tempInputWrapper">
+                      <input
+                        type="text"
+                        inputmode="decimal"
+                        id="tempInput"
+                        class="temp-input"
+                        value="22"
+                        placeholder="Type any temperature (e.g. 25, -40, 300)..."
+                        autocomplete="off"
+                        aria-describedby="validationErrorBox"
+                      />
+                      <span class="input-unit-addon" id="inputUnitAddon">°C</span>
+                    </div>
+                    <div class="physical-limit-hint" id="physicalLimitHint">
+                      Physical Limit Check: Must be &ge; -273.15 °C (Absolute Zero)
+                    </div>
+                  </div>
+
+                  <!-- From Unit / Swap Button / To Unit Row -->
+                  <div class="swap-converter-row">
+                    <div class="swap-select-group">
+                      <label for="fromUnitSelect" class="form-label">From Unit</label>
+                      <select id="fromUnitSelect" class="unit-select-dropdown">
+                        <option value="C" selected>Celsius (°C)</option>
+                        <option value="F">Fahrenheit (°F)</option>
+                        <option value="K">Kelvin (K)</option>
+                        <option value="R">Rankine (°R)</option>
+                      </select>
+                    </div>
+
+                    <button type="button" class="swap-units-btn" id="swapUnitsBtn" title="Swap From and To Units">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <polyline points="17 1 21 5 17 9"></polyline>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                        <polyline points="7 23 3 19 7 15"></polyline>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                      </svg>
+                      <span>Swap</span>
+                    </button>
+
+                    <div class="swap-select-group">
+                      <label for="toUnitSelect" class="form-label">To Unit</label>
+                      <select id="toUnitSelect" class="unit-select-dropdown">
+                        <option value="C">Celsius (°C)</option>
+                        <option value="F" selected>Fahrenheit (°F)</option>
+                        <option value="K">Kelvin (K)</option>
+                        <option value="R">Rankine (°R)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Highlighted Pairwise Live Result & Step-by-Step Formula Box -->
+                  <div class="live-pair-result-box" id="livePairResultBox">
+                    <div class="pair-equation-row">
+                      <span class="pair-source" id="pairSourceText">22.00 °C</span>
+                      <span class="pair-equals">=</span>
+                      <strong class="pair-target" id="pairTargetText">71.60 °F</strong>
+                    </div>
+                    <div class="pair-formula-row">
+                      <span class="formula-tag">Formula:</span>
+                      <code id="activeFormulaText">°F = (°C × 9/5) + 32</code>
+                    </div>
+                    <div class="pair-formula-row step-formula-row">
+                      <span class="formula-tag">Step-by-Step:</span>
+                      <code id="stepByStepFormulaText">Step 1: 22.00 × 9/5 = 39.60  →  Step 2: 39.60 + 32 = 71.60 °F</code>
+                    </div>
+                  </div>
+
+                  <!-- Smart Input Validation Error Banner -->
+                  <div id="validationErrorBox" class="validation-error-box hidden" role="alert" aria-live="assertive">
+                    <div class="error-icon-wrap">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                      </svg>
+                    </div>
+                    <div class="error-text-wrap">
+                      <h4 id="errorHeadline" class="error-headline">INVALID TEMPERATURE!</h4>
+                      <p id="errorMessage" class="error-message">Temperature cannot be below absolute zero.</p>
+                      <p id="errorDetail" class="error-detail"></p>
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="converter-actions">
+                    <button type="submit" class="btn btn-primary btn-convert" id="analyzeBtn">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                      </svg>
+                      <span>Convert &amp; Analyze Reading</span>
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" id="repeatBtn" title="Focus input to repeat conversion">
+                      <span>Repeat Conversion</span>
+                    </button>
+
+                    <button type="button" class="btn btn-outline" id="resetBtn" title="Reset converter and restore default Navy theme">
+                      <span>Reset</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Center Column: Animated Thermometer Gauge -->
+              <div class="glass-card thermometer-card">
+                <h3 class="card-title">Live Thermal Gauge</h3>
+                <p class="card-desc">Animated mercury response</p>
+
+                <div class="thermometer-stage">
+                  <div class="thermo-scale">
+                    <span class="scale-mark danger">&gt;45°C</span>
+                    <span class="scale-mark hot">35°C</span>
+                    <span class="scale-mark warm">25°C</span>
+                    <span class="scale-mark normal">15°C</span>
+                    <span class="scale-mark freezing">0°C</span>
+                    <span class="scale-mark subzero">-40°C</span>
+                  </div>
+
+                  <div class="thermometer-instrument">
+                    <div class="thermo-glass-tube">
+                      <div class="thermo-ticks">
+                        <span></span><span></span><span></span><span></span><span></span>
+                        <span></span><span></span><span></span><span></span><span></span>
+                      </div>
+                      <div class="thermo-mercury-fill" id="thermoMercuryFill" style="height: 54%;"></div>
+                    </div>
+                    <div class="thermo-glass-bulb">
+                      <div class="thermo-bulb-core" id="thermoBulbCore"></div>
+                    </div>
+                  </div>
+
+                  <div class="thermo-readout-box">
+                    <span class="thermo-readout-label">CELSIUS</span>
+                    <strong class="thermo-readout-val" id="thermoLiveReadout">22.0 °C</strong>
+                    <span class="thermo-readout-cat" id="thermoLiveCategory">Comfortable</span>
+                  </div>
+                </div>
+
+                <div class="display-shift-banner" id="displayShiftBanner">
+                  <span class="shift-title">Dynamic Display Atmosphere:</span>
+                  <span class="shift-value" id="displayShiftText">Medium Temp (Mild Display)</span>
+                </div>
+              </div>
+
+              <!-- Right Column: All-Units Table at Once + Live Alert Banner -->
+              <div class="results-column">
+                <div class="glass-card converted-units-card">
+                  <div class="card-header-row">
+                    <div>
+                      <h3 class="card-title">All Units at Once Table</h3>
+                      <p class="card-desc">Simultaneous output across all 4 thermodynamic scales</p>
+                    </div>
+                    <span class="entered-summary" id="enteredSummaryBadge">Input: 22.00 °C</span>
+                  </div>
+
+                  <div class="table-responsive">
+                    <table class="all-units-table" aria-label="All Units Conversion Table">
+                      <thead>
+                        <tr>
+                          <th>Scale</th>
+                          <th>Symbol</th>
+                          <th>Converted Value</th>
+                          <th>Absolute Zero</th>
+                          <th>Water Freeze / Boil</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>Celsius</strong></td>
+                          <td><code>°C</code></td>
+                          <td><strong class="table-val-highlight" id="resCelsius">22.00 °C</strong></td>
+                          <td><code>-273.15 °C</code></td>
+                          <td>0 °C / 100 °C</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Fahrenheit</strong></td>
+                          <td><code>°F</code></td>
+                          <td><strong class="table-val-highlight" id="resFahrenheit">71.60 °F</strong></td>
+                          <td><code>-459.67 °F</code></td>
+                          <td>32 °F / 212 °F</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Kelvin</strong></td>
+                          <td><code>K</code></td>
+                          <td><strong class="table-val-highlight" id="resKelvin">295.15 K</strong></td>
+                          <td><code>0.00 K</code></td>
+                          <td>273.15 K / 373.15 K</td>
+                        </tr>
+                        <tr>
+                          <td><strong>Rankine</strong></td>
+                          <td><code>°R</code></td>
+                          <td><strong class="table-val-highlight" id="resRankine">531.27 °R</strong></td>
+                          <td><code>0.00 °R</code></td>
+                          <td>491.67 °R / 671.67 °R</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Live Intelligent Alert Card for Current Reading -->
+                <div class="glass-card intelligent-alert-card" id="alertCard" role="status" aria-live="polite">
+                  <div class="alert-icon-container" id="alertIconContainer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                  </div>
+                  <div class="alert-content">
+                    <div class="alert-header-row">
+                      <span class="alert-label">INTELLIGENT THERMAL CLASSIFICATION</span>
+                      <span class="alert-severity-pill" id="alertSeverityPill">OPTIMAL / NORMAL</span>
+                    </div>
+                    <h4 class="alert-message-title" id="alertMessageTitle">Comfortable: Temperature is in the comfortable normal range (15°C to 25°C).</h4>
+                    <p class="alert-message-sub" id="alertMessageSub">
+                      Recommendation: No corrective action required; ideal ambient operating conditions.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- 6-Tier Spectrum Bar -->
+                <div class="glass-card category-analysis-card" id="categoryCard">
+                  <div class="spectrum-bar spectrum-bar-6" aria-label="6-Tier Temperature Alert Classification">
+                    <div class="spectrum-seg seg-freezing" id="segFreezing">
+                      <span>Freezing</span>
+                      <small>&le; 0°C</small>
+                    </div>
+                    <div class="spectrum-seg seg-cold" id="segCold">
+                      <span>Cold</span>
+                      <small>0–15°C</small>
+                    </div>
+                    <div class="spectrum-seg seg-normal active-seg" id="segComfortable">
+                      <span>Comfortable</span>
+                      <small>15–25°C</small>
+                    </div>
+                    <div class="spectrum-seg seg-warm" id="segWarm">
+                      <span>Warm</span>
+                      <small>25–35°C</small>
+                    </div>
+                    <div class="spectrum-seg seg-hot" id="segHot">
+                      <span>Hot</span>
+                      <small>35–45°C</small>
+                    </div>
+                    <div class="spectrum-seg seg-danger" id="segExtreme">
+                      <span>Extreme</span>
+                      <small>&gt; 45°C</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reference Table of Common Temperatures -->
+            <div class="glass-card common-ref-card">
+              <div class="card-header-row">
+                <div>
+                  <h3 class="card-title">Reference Table of Common Temperatures</h3>
+                  <p class="card-desc">Click any benchmark row to load it directly into the live converter</p>
+                </div>
+                <span class="unit-badge-indicator">Click Row to Load</span>
+              </div>
+              <div class="table-responsive">
+                <table class="history-table common-ref-table" id="commonTempsTable">
+                  <thead>
+                    <tr>
+                      <th>Benchmark / Phenomenon</th>
+                      <th>Celsius (°C)</th>
+                      <th>Fahrenheit (°F)</th>
+                      <th>Kelvin (K)</th>
+                      <th>Rankine (°R)</th>
+                      <th>Alert Classification</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="clickable-ref-row" data-ref-c="-273.15">
+                      <td><strong>Absolute Zero (Thermodynamic Limit)</strong></td>
+                      <td><code>-273.15 °C</code></td>
+                      <td><code>-459.67 °F</code></td>
+                      <td><code>0.00 K</code></td>
+                      <td><code>0.00 °R</code></td>
+                      <td><span class="cat-pill Freezing">Freezing</span></td>
+                    </tr>
+                    <tr class="clickable-ref-row" data-ref-c="-195.8">
+                      <td><strong>Liquid Nitrogen Boiling Point</strong></td>
+                      <td><code>-195.80 °C</code></td>
+                      <td><code>-320.44 °F</code></td>
+                      <td><code>77.35 K</code></td>
+                      <td><code>139.23 °R</code></td>
+                      <td><span class="cat-pill Freezing">Freezing</span></td>
+                    </tr>
+                    <tr class="clickable-ref-row" data-ref-c="-78.5">
+                      <td><strong>Dry Ice (CO₂) Sublimation</strong></td>
+                      <td><code>-78.50 °C</code></td>
+                      <td><code>-109.30 °F</code></td>
+                      <td><code>194.65 K</code></td>
+                      <td><code>350.37 °R</code></td>
+                      <td><span class="cat-pill Freezing">Freezing</span></td>
+                    </tr>
+                    <tr class="clickable-ref-row" data-ref-c="0">
+                      <td><strong>Water Freezing / Melting Point</strong></td>
+                      <td><code>0.00 °C</code></td>
+                      <td><code>32.00 °F</code></td>
+                      <td><code>273.15 K</code></td>
+                      <td><code>491.67 °R</code></td>
+                      <td><span class="cat-pill Freezing">Freezing</span></td>
+                    </tr>
+                    <tr class="clickable-ref-row" data-ref-c="4">
+                      <td><strong>Refrigerator / Food Storage Safe Zone</strong></td>
+                      <td><code>4.00 °C</code></td>
+                      <td><code>39.20 °F</code></td>
+                      <td><code>277.15 K</code></td>
+                      <td><code>498.87 °R</code></td>
+                      <td><span class="cat-pill Cold">Cold</span></td>
+                    </tr>
+                    <tr class="clickable-ref-row" data-ref-c="22">
+                      <td><strong>Standard Comfortable Room Temperature</strong></td>
+                      <td><code>22.00 °C</code></td>
+                      <td><code>71.60 °F</code></td>
+                      <td><code>295.15 K</code></td>
+                      <td><code>531.27 °R</code></td>
+                      <td><span class="cat-pill Comfortable">Comfortable</span></td>
+                    </tr>
+                    <tr class="clickable-ref-row" data-ref-c="37">
+                      <td><strong>Normal Human Body Temperature</strong></td>
+                      <td><code>37.00 °C</code></td>
+                      <td><code>98.60 °F</code></td>
+                      <td><code>310.15 K</code></td>
+                      <td><code>558.27 °R</code></td>
+                      <td><span class="cat-pill Hot">Hot</span></td>
+                    </tr>
+                    <tr class="clickable-ref-row" data-ref-c="100">
+                      <td><strong>Water Boiling Point (Standard Atmosphere)</strong></td>
+                      <td><code>100.00 °C</code></td>
+                      <td><code>212.00 °F</code></td>
+                      <td><code>373.15 K</code></td>
+                      <td><code>671.67 °R</code></td>
+                      <td><span class="cat-pill Extreme">Extreme Heat / Danger</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 2. TEMPERATURE STATISTICS DASHBOARD ==================== -->
+        <section id="analyzer" class="section statistics-section">
+          <div class="container">
+            <div class="section-header">
+              <div class="section-eyebrow">DATA ANALYTICS</div>
+              <h2 class="section-title">Temperature Statistics Dashboard</h2>
+              <p class="section-subtitle">
+                Automatic statistical summary, trend analysis, and visual charts computed from your recorded temperature readings.
+              </p>
+            </div>
+
+            <!-- Hidden internal state container (not displayed) -->
+            <div class="glass-card multi-analyzer-input-card hidden" aria-hidden="true">
+              <div class="multi-input-grid">
+                <!-- Comma-Separated Batch Input + Unit Selector -->
+                <div class="batch-input-col">
+                  <label for="batchReadingsInput" class="form-label">
+                    Enter Comma-Separated Readings, Upload CSV, or Generate Random Data
+                  </label>
+                  <div class="batch-input-row">
+                    <input
+                      type="text"
+                      id="batchReadingsInput"
+                      class="temp-input"
+                      value="-4.5, 8.0, 18.5, 22.0, 24.5, 31.0, 39.5, 48.0"
+                      placeholder="e.g. 12.5, 18.0, 22.4, 27.8, 35.0, 42.5"
+                    />
+                    <select id="analyzerUnitSelect" class="unit-select-dropdown analyzer-unit-select" aria-label="Analyzer Input Unit">
+                      <option value="C" selected>°C (Celsius)</option>
+                      <option value="F">°F (Fahrenheit)</option>
+                      <option value="K">K (Kelvin)</option>
+                      <option value="R">°R (Rankine)</option>
+                    </select>
+                    <button type="button" class="btn btn-primary" id="runBatchAnalysisBtn">
+                      <span>Analyze</span>
+                    </button>
+                  </div>
+
+                  <!-- CSV Upload + Random Data + Dataset Presets -->
+                  <div class="analyzer-presets-row">
+                    <input type="file" id="csvUploadInput" accept=".csv,.txt" class="hidden" />
+                    <button type="button" class="btn btn-secondary btn-sm" id="uploadCsvBtn" title="Upload a CSV or TXT file containing temperature values">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <span>Upload CSV</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="generateRandomDataBtn" title="Generate random realistic temperature readings">
+                      <span>🎲 Random Sample Data</span>
+                    </button>
+                    <button type="button" class="btn btn-outline btn-sm" id="exportAnalyzerCsvBtn" title="Export analyzed readings table to CSV">
+                      <span>Export CSV</span>
+                    </button>
+                  </div>
+
+                  <div class="analyzer-presets-row">
+                    <span class="presets-mini-label">Sample Datasets:</span>
+                    <button type="button" class="preset-chip" data-dataset="-4.5, 8.0, 18.5, 22.0, 24.5, 31.0, 39.5, 48.0" data-unit="C">Rising Heatwave (All 6 Alerts)</button>
+                    <button type="button" class="preset-chip" data-dataset="44.0, 36.5, 28.0, 21.0, 12.0, -2.5" data-unit="C">Cooling Front (Falling Trend)</button>
+                    <button type="button" class="preset-chip" data-dataset="21.2, 21.8, 22.0, 21.5, 22.1, 21.7, 21.9" data-unit="C">Stable Cleanroom (Stable Trend)</button>
+                    <button type="button" class="preset-chip" data-dataset="18.0, 19.5, 34.0, 35.5, 20.0, 46.5" data-unit="C">Rapid Spike Test (ΔT Warning)</button>
+                  </div>
+                </div>
+
+                <!-- Add One-by-One Controls -->
+                <div class="single-add-col">
+                  <label for="singleReadingInput" class="form-label">Add Reading One by One</label>
+                  <div class="single-add-row">
+                    <input
+                      type="text"
+                      inputmode="decimal"
+                      id="singleReadingInput"
+                      class="temp-input"
+                      placeholder="e.g. 26.5"
+                    />
+                    <button type="button" class="btn btn-secondary" id="addSingleReadingBtn">
+                      <span>+ Add</span>
+                    </button>
+                    <button type="button" class="btn btn-outline" id="clearAnalyzerReadingsBtn" title="Clear all readings">
+                      <span>Clear</span>
+                    </button>
+                  </div>
+                  <div class="active-chips-container" id="activeReadingsChips" aria-label="Active Readings List">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <div id="analyzerErrorBox" class="validation-error-box hidden" role="alert">
+                <div class="error-text-wrap">
+                  <h4 class="error-headline">ANALYZER VALIDATION NOTICE</h4>
+                  <p id="analyzerErrorMessage" class="error-message"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Daily Summary Line Banner ("Hottest reading was X at time Y") -->
+            <div class="glass-card daily-summary-banner" id="dailySummaryBanner">
+              <div class="daily-summary-icon">🌡️</div>
+              <div class="daily-summary-text" id="dailySummaryText">
+                Hottest reading was 48.00 °C at Reading #8 • Coldest reading was -4.50 °C at Reading #1
+              </div>
+            </div>
+
+            <!-- 8 Summary KPI Cards (Min, Max, Average, Median, Range, Std Dev, Trend, Next-Reading Prediction) -->
+            <div class="stats-kpi-grid stats-kpi-8">
+              <div class="glass-card kpi-card">
+                <div class="kpi-info">
+                  <span class="kpi-label">Minimum</span>
+                  <strong class="kpi-value" id="statMin">--</strong>
+                  <span class="kpi-sub" id="statMinSub">Lowest reading</span>
+                </div>
+              </div>
+
+              <div class="glass-card kpi-card">
+                <div class="kpi-info">
+                  <span class="kpi-label">Maximum</span>
+                  <strong class="kpi-value" id="statMax">--</strong>
+                  <span class="kpi-sub" id="statMaxSub">Highest reading</span>
+                </div>
+              </div>
+
+              <div class="glass-card kpi-card">
+                <div class="kpi-info">
+                  <span class="kpi-label">Average (Mean)</span>
+                  <strong class="kpi-value" id="statAvg">--</strong>
+                  <span class="kpi-sub" id="statAvgSub">Marked on chart</span>
+                </div>
+              </div>
+
+              <div class="glass-card kpi-card">
+                <div class="kpi-info">
+                  <span class="kpi-label">Median</span>
+                  <strong class="kpi-value" id="statMedian">--</strong>
+                  <span class="kpi-sub" id="statMedianSub">Sorted midpoint</span>
+                </div>
+              </div>
+
+              <div class="glass-card kpi-card">
+                <div class="kpi-info">
+                  <span class="kpi-label">Range (Max − Min)</span>
+                  <strong class="kpi-value" id="statRange">--</strong>
+                  <span class="kpi-sub" id="statRangeSub">Total spread</span>
+                </div>
+              </div>
+
+              <div class="glass-card kpi-card">
+                <div class="kpi-info">
+                  <span class="kpi-label">Std Deviation (&sigma;)</span>
+                  <strong class="kpi-value" id="statStdDev">--</strong>
+                  <span class="kpi-sub" id="statStdDevSub">Dispersion from mean</span>
+                </div>
+              </div>
+
+              <div class="glass-card kpi-card kpi-trend-card" id="kpiTrendCard">
+                <div class="kpi-info">
+                  <span class="kpi-label">Temperature Trend</span>
+                  <strong class="kpi-value" id="statTrend">--</strong>
+                  <span class="kpi-sub" id="statTrendSub">Linear regression slope</span>
+                </div>
+              </div>
+
+              <div class="glass-card kpi-card kpi-prediction-card">
+                <div class="kpi-info">
+                  <span class="kpi-label">Next-Reading Prediction</span>
+                  <strong class="kpi-value" id="statNextPred">--</strong>
+                  <span class="kpi-sub" id="statNextPredSub">Forecast for Reading #N+1</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sequence Heatmap Colour Strip -->
+            <div class="glass-card heatmap-strip-card">
+              <div class="card-header-row">
+                <div>
+                  <h3 class="card-title">Sequence Thermal Heatmap Colour Strip</h3>
+                  <p class="card-desc">Visual thermal progression across every reading in the analyzed series</p>
+                </div>
+                <span class="unit-badge-indicator" id="heatmapLegendBadge">Blue (Cold) → Green (Optimal) → Red (Hot)</span>
+              </div>
+              <div class="heatmap-strip-container" id="heatmapStripContainer" aria-label="Thermal Heatmap Strip">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- 3 Chart.js Visualizations: Line Chart with Average Line, Bar Chart, Doughnut Chart -->
+            <div class="charts-grid charts-grid-3">
+              <div class="glass-card chart-card">
+                <div class="card-header-row">
+                  <div>
+                    <h3 class="card-title">Line Chart (with Average &amp; Next Prediction)</h3>
+                    <p class="card-desc">Plots readings (°C), dashed Average line, and forecasted next point</p>
+                  </div>
+                  <span class="unit-badge-indicator" id="chartCountBadge">8 Readings</span>
+                </div>
+                <div class="chart-canvas-wrap">
+                  <canvas id="trendChart" aria-label="Readings Line Chart with Average Marked"></canvas>
+                </div>
+              </div>
+
+              <div class="glass-card chart-card">
+                <div class="card-header-row">
+                  <div>
+                    <h3 class="card-title">Readings Bar Chart Comparison</h3>
+                    <p class="card-desc">Colour-coded bar comparison of each reading by alert zone</p>
+                  </div>
+                </div>
+                <div class="chart-canvas-wrap">
+                  <canvas id="readingsBarChart" aria-label="Readings Bar Chart"></canvas>
+                </div>
+              </div>
+
+              <div class="glass-card chart-card">
+                <div class="card-header-row">
+                  <div>
+                    <h3 class="card-title">6-Tier Alert Doughnut Chart</h3>
+                    <p class="card-desc">Proportion of readings across the 6 alert categories</p>
+                  </div>
+                </div>
+                <div class="chart-canvas-wrap">
+                  <canvas id="categoryChart" aria-label="Temperature Category Distribution Chart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 3. INTELLIGENT ALERTS, PRESETS, CUSTOM THRESHOLDS & RAPID CHANGE ==================== -->
+        <section id="alerts" class="section alerts-section">
+          <div class="container">
+            <div class="section-header">
+              <div class="section-eyebrow">MODULE 3 • AUTOMATIC ALERT &amp; THRESHOLD ENGINE</div>
+              <h2 class="section-title">Intelligent Alerts, Custom Thresholds &amp; Presets</h2>
+              <p class="section-subtitle">
+                Features 6 colour-coded alert categories, <strong>Rapid Change Warning</strong> detection, <strong>Custom Low/High Thresholds</strong>, environment presets (<strong>Room, Fridge/Food Storage, CPU, Fever Check</strong>), and a timestamped Alert History log.
+              </p>
+            </div>
+
+            <!-- Rapid Change Warning Banner -->
+            <div class="glass-card rapid-change-banner" id="rapidChangeBanner">
+              <div class="rapid-icon">⚡</div>
+              <div class="rapid-body">
+                <strong id="rapidChangeHeadline">Rapid Thermal Change Monitor</strong>
+                <p id="rapidChangeDetails">Monitoring consecutive readings for sudden temperature spikes or drops (&ge; 8.0°C step change).</p>
+              </div>
+              <span class="alert-severity-pill" id="rapidChangeBadge">NORMAL RATE</span>
+            </div>
+
+            <!-- Custom Low/High Thresholds & Monitoring Presets Card -->
+            <div class="glass-card custom-thresholds-card">
+              <div class="card-header-row">
+                <div>
+                  <h3 class="card-title">Custom Low / High Thresholds &amp; Environment Presets</h3>
+                  <p class="card-desc">Select a preset profile or set custom safe temperature limits (°C) to flag threshold breaches</p>
+                </div>
+                <span class="unit-badge-indicator" id="activePresetBadge">Preset: Room (18°C – 25°C)</span>
+              </div>
+
+              <div class="threshold-presets-row">
+                <span class="presets-mini-label">Environment Presets:</span>
+                <button type="button" class="preset-chip threshold-preset-btn active-preset" data-preset-name="Room" data-low="18" data-high="25">
+                  🏠 Room (18°C – 25°C)
+                </button>
+                <button type="button" class="preset-chip threshold-preset-btn" data-preset-name="Fridge / Food Storage" data-low="1" data-high="4">
+                  ❄️ Fridge / Food Storage (1°C – 4°C)
+                </button>
+                <button type="button" class="preset-chip threshold-preset-btn" data-preset-name="CPU Thermal" data-low="30" data-high="80">
+                  💻 CPU (30°C – 80°C)
+                </button>
+                <button type="button" class="preset-chip threshold-preset-btn" data-preset-name="Fever Check" data-low="36.1" data-high="37.5">
+                  🩺 Fever Check (36.1°C – 37.5°C)
+                </button>
+              </div>
+
+              <div class="threshold-inputs-grid">
+                <div class="threshold-input-box">
+                  <label for="customLowThreshold" class="form-label">Custom Low Threshold (°C)</label>
+                  <input type="number" step="0.1" id="customLowThreshold" class="temp-input" value="18.0" />
+                </div>
+                <div class="threshold-input-box">
+                  <label for="customHighThreshold" class="form-label">Custom High Threshold (°C)</label>
+                  <input type="number" step="0.1" id="customHighThreshold" class="temp-input" value="25.0" />
+                </div>
+                <div class="threshold-action-box">
+                  <button type="button" class="btn btn-primary" id="applyThresholdsBtn">
+                    <span>Evaluate Thresholds</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="threshold-evaluation-strip" id="thresholdEvaluationStrip">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- 6 Colour-Coded Alert Reference & Counter per Type Cards -->
+            <div class="alert-tiers-grid">
+              <div class="glass-card alert-tier-card tier-freezing">
+                <div class="tier-top">
+                  <span class="tier-badge">FREEZING (&le; 0°C)</span>
+                  <strong class="tier-count" id="countFreezing">0</strong>
+                </div>
+                <p class="tier-desc">Safety Message: Sub-zero freezing condition. Insulate pipes &amp; guard against frost/ice damage.</p>
+              </div>
+
+              <div class="glass-card alert-tier-card tier-cold">
+                <div class="tier-top">
+                  <span class="tier-badge">COLD (0°C – 15°C)</span>
+                  <strong class="tier-count" id="countCold">0</strong>
+                </div>
+                <p class="tier-desc">Safety Message: Low temperature detected. Maintain thermal regulation or cold-chain integrity.</p>
+              </div>
+
+              <div class="glass-card alert-tier-card tier-comfortable">
+                <div class="tier-top">
+                  <span class="tier-badge">COMFORTABLE (15°C – 25°C)</span>
+                  <strong class="tier-count" id="countComfortable">0</strong>
+                </div>
+                <p class="tier-desc">Safety Message: Optimal range. Ideal operating conditions with no thermal hazard.</p>
+              </div>
+
+              <div class="glass-card alert-tier-card tier-warm">
+                <div class="tier-top">
+                  <span class="tier-badge">WARM (25°C – 35°C)</span>
+                  <strong class="tier-count" id="countWarm">0</strong>
+                </div>
+                <p class="tier-desc">Safety Message: Elevated warmth. Ensure adequate ventilation, hydration, and airflow.</p>
+              </div>
+
+              <div class="glass-card alert-tier-card tier-hot">
+                <div class="tier-top">
+                  <span class="tier-badge">HOT (35°C – 45°C)</span>
+                  <strong class="tier-count" id="countHot">0</strong>
+                </div>
+                <p class="tier-desc">Safety Message: High heat warning! Activate cooling systems and prevent heat exhaustion.</p>
+              </div>
+
+              <div class="glass-card alert-tier-card tier-extreme">
+                <div class="tier-top">
+                  <span class="tier-badge">EXTREME HEAT / DANGER (&gt; 45°C)</span>
+                  <strong class="tier-count" id="countExtreme">0</strong>
+                </div>
+                <p class="tier-desc">Safety Message: CRITICAL DANGER! Immediate thermal shutdown or emergency cooling required.</p>
+              </div>
+            </div>
+
+            <!-- Per-Reading Classification Table -->
+            <div class="glass-card history-table-card" style="margin-bottom: 24px;">
+              <div class="history-card-toolbar">
+                <div class="toolbar-left">
+                  <span class="history-badge">Analyzed Readings Table with Classification</span>
+                  <span class="history-total-note" id="analyzedReadingsCountNote">(8 readings classified)</span>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="history-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Input Reading</th>
+                      <th>Celsius (°C)</th>
+                      <th>Fahrenheit (°F)</th>
+                      <th>Kelvin (K)</th>
+                      <th>Rankine (°R)</th>
+                      <th>Alert Classification</th>
+                      <th>Custom Band Status</th>
+                      <th>Safety Message &amp; Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="analyzedAlertsTableBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Alert History Log with Timestamps & Counter per Type -->
+            <div class="glass-card history-table-card">
+              <div class="history-card-toolbar">
+                <div class="toolbar-left">
+                  <span class="history-badge">Alert History Log with Timestamps</span>
+                  <span class="history-total-note" id="alertHistoryCountNote">(0 alerts logged)</span>
+                </div>
+                <div class="toolbar-right">
+                  <button type="button" class="btn btn-outline btn-sm" id="clearAlertLogBtn">
+                    <span>Clear Alert Log</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="history-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Timestamp</th>
+                      <th>Alert Type</th>
+                      <th>Trigger Reading</th>
+                      <th>Safety &amp; Diagnostic Message</th>
+                    </tr>
+                  </thead>
+                  <tbody id="alertHistoryLogBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== CONVERSION HISTORY (LAST 10) & EXPORT ==================== -->
+        <section id="history" class="section history-section">
+          <div class="container">
+            <div class="section-header-flex">
+              <div>
+                <div class="section-eyebrow">PERSISTENT LOG STORAGE</div>
+                <h2 class="section-title">Conversion History (Last 10) &amp; Export</h2>
+                <p class="section-subtitle">
+                  Stores logged conversions in browser <code>localStorage</code> (displaying the <strong>last 10 readings</strong> by default) with one-click CSV Export and full Report Download.
+                </p>
+              </div>
+
+              <div class="history-actions">
+                <button type="button" class="btn btn-secondary" id="exportHistoryCsvBtn">
+                  <span>Export History CSV</span>
+                </button>
+
+                <button type="button" class="btn btn-primary" id="downloadReportBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  <span>DOWNLOAD REPORT</span>
+                </button>
+
+                <button type="button" class="btn btn-danger" id="clearHistoryBtn">
+                  <span>Clear History</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="glass-card history-table-card">
+              <div class="history-card-toolbar">
+                <div class="toolbar-left">
+                  <span class="history-badge" id="historyShowingBadge">Showing Last 10 Conversions</span>
+                  <span class="history-total-note" id="historyTotalNote">(0 total stored in localStorage)</span>
+                </div>
+                <div class="toolbar-right">
+                  <label class="toggle-all-label">
+                    <input type="checkbox" id="showAllHistoryToggle" />
+                    <span>Show all stored readings</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="history-table" id="historyTable">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Timestamp</th>
+                      <th>Entered Input</th>
+                      <th>Celsius (°C)</th>
+                      <th>Fahrenheit (°F)</th>
+                      <th>Kelvin (K)</th>
+                      <th>Rankine (°R)</th>
+                      <th>Alert Category</th>
+                      <th>Safety Message</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyTableBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        <div class="container footer-content">
+          <div class="footer-brand">
+            <strong>SMART TEMPERATURE ANALYZER &amp; CONVERTER WITH INTELLIGENT ALERTS</strong>
+            <p>Interactive Temperature Conversion, Statistical Forecasting &amp; Intelligent Alert System</p>
+          </div>
+          <div class="footer-links">
+            <a href="#home">Overview</a>
+            <a href="#converter">Converter</a>
+            <a href="#analyzer">Analyzer</a>
+            <a href="#alerts">Alerts</a>
+            <a href="#history">History</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Main Application Script -->
+  <script src="script.js"></script>
+</body>
+</html>
